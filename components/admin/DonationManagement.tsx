@@ -29,59 +29,79 @@ export default function DonationManagement() {
     }, [page]);
 
     return (
-        <div>
+        <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+            <div style={{ marginBottom: '2.5rem' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: '800' }}>Contribution Ledger</h2>
+                <p style={{ color: 'var(--secondary)' }}>Audit and monitor all platform-wide financial transactions.</p>
+            </div>
+
             <div className={styles.tableContainer}>
                 <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th>Date / Time</th>
-                            <th>Donor</th>
-                            <th>Event</th>
-                            <th>Amount</th>
-                            <th>Status</th>
+                            <th>TIMESTAMP</th>
+                            <th>CONTRIBUTOR</th>
+                            <th>INITIATIVE</th>
+                            <th>AMOUNT</th>
+                            <th>STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={5} style={{ textAlign: 'center' }}>Loading...</td></tr>
+                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: 'var(--secondary)' }}>Accessing ledger records...</td></tr>
                         ) : donations.length === 0 ? (
-                            <tr><td colSpan={5} style={{ textAlign: 'center' }}>No donations found.</td></tr>
+                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: 'var(--secondary)' }}>No transactions found in this period.</td></tr>
                         ) : donations.map(donation => (
                             <tr key={donation._id}>
-                                <td>{new Date(donation.createdAt).toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}</td>
+                                <td style={{ fontSize: '0.85rem', color: 'var(--secondary)', fontWeight: '600' }}>
+                                    {new Date(donation.createdAt).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </td>
                                 <td>
                                     {donation.user ? (
-                                        <div>
-                                            <div style={{ fontWeight: 'bold' }}>{donation.user.username}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{donation.user.email}</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--foreground)', color: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.7rem' }}>
+                                                {donation.user.username[0].toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <div style={{ fontWeight: '700', fontSize: '0.9rem' }}>{donation.user.username}</div>
+                                                <div style={{ fontSize: '0.75rem', color: 'var(--secondary)' }}>{donation.user.email}</div>
+                                            </div>
                                         </div>
                                     ) : (
-                                        <span style={{ fontStyle: 'italic', color: '#94a3b8' }}>Guest</span>
+                                        <span style={{ fontStyle: 'italic', color: 'var(--secondary)', fontSize: '0.9rem' }}>Anonymous Contributor</span>
                                     )}
                                 </td>
-                                <td>{donation.event?.name || 'Deleted Event'}</td>
-                                <td style={{ fontWeight: 'bold', color: '#4ade80' }}>
+                                <td>
+                                    <div style={{ fontWeight: '600', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {donation.event?.name || 'Archived Initiative'}
+                                    </div>
+                                    <div style={{ fontSize: '0.7rem', color: 'var(--secondary)', fontFamily: 'monospace' }}>#{donation.event?.code || 'N/A'}</div>
+                                </td>
+                                <td style={{ fontWeight: '800', fontSize: '1.1rem' }}>
                                     ${(donation.amount / 100).toFixed(2)}
                                 </td>
                                 <td>
-                                    <span style={{
-                                        padding: '0.25rem 0.5rem',
-                                        borderRadius: '0.25rem',
-                                        background: donation.status === 'completed' ? 'rgba(34, 197, 94, 0.2)' :
-                                            donation.status === 'pending' ? 'rgba(234, 179, 8, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                        color: donation.status === 'completed' ? '#4ade80' :
-                                            donation.status === 'pending' ? '#fbbf24' : '#fca5a5',
-                                        fontSize: '0.8rem',
-                                        textTransform: 'capitalize'
+                                    <div style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.4rem',
+                                        padding: '0.4rem 0.8rem',
+                                        borderRadius: '50px',
+                                        background: donation.status === 'completed' ? 'var(--foreground)' : 'var(--glass-border)',
+                                        color: donation.status === 'completed' ? 'var(--background)' : 'var(--secondary)',
+                                        fontSize: '0.75rem',
+                                        fontWeight: '800',
+                                        letterSpacing: '0.05em'
                                     }}>
-                                        {donation.status}
-                                    </span>
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: donation.status === 'completed' ? '#4ade80' : donation.status === 'pending' ? '#fbbf24' : '#f87171' }}></div>
+                                        {donation.status.toUpperCase()}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -89,23 +109,25 @@ export default function DonationManagement() {
                 </table>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '3rem', padding: '1.5rem', background: 'var(--glass-bg)', borderRadius: '1.5rem', border: '1px solid var(--glass-border)' }}>
                 <button
                     className={styles.actionBtn}
                     disabled={page <= 1 || loading}
                     onClick={() => setPage(p => p - 1)}
+                    style={{ margin: 0, background: 'var(--glass-border)', opacity: page <= 1 ? 0.3 : 1 }}
                 >
-                    Previous
+                    ← Previous
                 </button>
-                <div style={{ color: '#cbd5e1' }}>
-                    Page {page} of {totalPages}
+                <div style={{ fontWeight: '800', letterSpacing: '0.1em', fontSize: '0.85rem' }}>
+                    PAGE {page} OF {totalPages}
                 </div>
                 <button
                     className={styles.actionBtn}
                     disabled={page >= totalPages || loading}
                     onClick={() => setPage(p => p + 1)}
+                    style={{ margin: 0, background: 'var(--glass-border)', opacity: page >= totalPages ? 0.3 : 1 }}
                 >
-                    Next
+                    Next →
                 </button>
             </div>
         </div>

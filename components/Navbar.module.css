@@ -16,10 +16,7 @@
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.025em;
-    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--foreground);
 }
 
 .links {
@@ -57,16 +54,16 @@
 .cta {
     padding: 0.75rem 1.5rem;
     background: var(--primary);
-    color: white;
+    color: var(--primary-invert);
     border-radius: 9999px;
     font-weight: 600;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
 }
 
 .cta:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.23);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .mobileMenuBtn {

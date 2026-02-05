@@ -30,9 +30,9 @@ export default function MyEventsView() {
     const toggleEventStatus = async (eventId: string, currentIsDisabled: boolean) => {
         try {
             const res = await fetch(`/api/events/${eventId}/disable`, {
-                method: 'PATCH', // Changed to PATCH to match API
+                method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ disable: !currentIsDisabled }) // Changed to 'disable' to match API
+                body: JSON.stringify({ disable: !currentIsDisabled })
             });
             if (res.ok) {
                 const data = await res.json();
@@ -62,65 +62,66 @@ export default function MyEventsView() {
         }
     };
 
-    if (loading) return <div style={{ color: '#94a3b8' }}>Loading your events...</div>;
+    if (loading) return <div style={{ color: 'var(--secondary)' }}>Loading your events...</div>;
 
     return (
-        <div>
+        <div style={{ animation: 'slideUp 0.4s ease-out' }}>
+            <h2 style={{ marginBottom: '2rem' }}>My Initiatives</h2>
+
             {events.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '4rem', background: 'rgba(255,255,255,0.02)', borderRadius: '1.5rem', border: '1px dashed rgba(255,255,255,0.1)' }}>
-                    <p style={{ color: '#94a3b8', marginBottom: '1.5rem' }}>You haven't created any events yet.</p>
+                <div style={{ textAlign: 'center', padding: '6rem 2rem', background: 'var(--glass-bg)', borderRadius: '2rem', border: '1px dashed var(--glass-border)' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>🎯</div>
+                    <h3 style={{ marginBottom: '0.5rem' }}>No events organized yet</h3>
+                    <p style={{ color: 'var(--secondary)', marginBottom: '2.5rem', maxWidth: '400px', margin: '0 auto 2.5rem' }}>
+                        Start your journey by creating an event to help your local community.
+                    </p>
                     <Link href="/events/create">
-                        <button className="cta" style={{ border: 'none' }}>Create Your First Event</button>
+                        <button style={{ background: 'var(--primary)', color: 'var(--primary-invert)', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: '700', cursor: 'pointer' }}>
+                            Create Your First Event
+                        </button>
                     </Link>
                 </div>
             ) : (
-                <div className={styles.grid}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.5rem' }}>
                     {events.map(event => (
-                        <div key={event._id} className={styles.card}>
-                            <div className={`${styles.statusBadge}`} style={{
-                                background: event.isDisabled ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
-                                color: event.isDisabled ? '#f87171' : '#4ade80',
-                                border: `1px solid ${event.isDisabled ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)'}`
-                            }}>
-                                {event.isDisabled ? 'Disabled' : event.status}
+                        <div key={event._id} className={styles.bentoCard}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                                <div style={{ padding: '0.4rem 0.8rem', background: event.isDisabled ? 'rgba(239, 68, 68, 0.1)' : 'var(--glass-border)', color: event.isDisabled ? '#f87171' : 'var(--foreground)', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', border: '1px solid var(--glass-border)' }}>
+                                    {event.isDisabled ? 'Disabled' : event.status}
+                                </div>
+                                <span style={{ color: 'var(--secondary)', fontSize: '0.8rem', fontWeight: '600' }}>#{event.code}</span>
                             </div>
 
-                            <h3 className={styles.cardTitle}>{event.name}</h3>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' }}>{event.name}</h3>
 
-                            <div className={styles.cardMeta}>
-                                <span>📅 {new Date(event.date).toLocaleDateString()}</span>
-                                <span>👥 {event.currentParticipants} / {event.maxParticipants}</span>
-                                <span>🔖 {event.code}</span>
+                            <div style={{ color: 'var(--secondary)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span>📅</span> {new Date(event.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span>👥</span> {event.currentParticipants} of {event.maxParticipants} spots filled
+                                </div>
                             </div>
 
-                            <div className={styles.cardActions}>
+                            <div style={{ marginTop: 'auto', display: 'flex', gap: '0.75rem', borderTop: '1px solid var(--glass-border)', paddingTop: '1.5rem' }}>
                                 <button
-                                    className={styles.iconBtn}
                                     onClick={() => viewParticipants(event._id)}
-                                    title="View Participants"
+                                    style={{ flex: 1, padding: '0.75rem', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '0.75rem', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem' }}
                                 >
-                                    👥
+                                    Participants
                                 </button>
-                                <Link href={`/events/${event._id}/edit`}>
-                                    <button className={styles.iconBtn} title="Edit Details">📝</button>
-                                </Link>
-                                {event.disabledBy === 'admin' ? (
-                                    <div style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', borderRadius: '0.5rem', fontSize: '0.75rem', fontWeight: 600 }}>
-                                        Admin Lock
-                                    </div>
-                                ) : (
-                                    <button
-                                        className={styles.iconBtn}
-                                        onClick={() => toggleEventStatus(event._id, event.isDisabled)}
-                                        title={event.isDisabled ? "Enable Event" : "Disable Event"}
-                                        style={{ color: event.isDisabled ? '#4ade80' : '#f87171' }}
-                                    >
-                                        {event.isDisabled ? '👁️' : '🚫'}
+                                <Link href={`/events/${event._id}/edit`} style={{ flex: 1 }}>
+                                    <button style={{ width: '100%', padding: '0.75rem', background: 'var(--glass-border)', color: 'var(--foreground)', border: '1px solid var(--glass-border)', borderRadius: '0.75rem', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem' }}>
+                                        Edit
                                     </button>
-                                )}
-                                <Link href={`/events/${event._id}`}>
-                                    <button className={styles.iconBtn} title="View Page">🔗</button>
                                 </Link>
+                                <button
+                                    onClick={() => toggleEventStatus(event._id, event.isDisabled)}
+                                    disabled={event.disabledBy === 'admin'}
+                                    style={{ padding: '0.75rem', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: '0.75rem', cursor: event.disabledBy === 'admin' ? 'not-allowed' : 'pointer', opacity: event.disabledBy === 'admin' ? 0.5 : 1 }}
+                                >
+                                    {event.isDisabled ? '👁️' : '🚫'}
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -129,25 +130,25 @@ export default function MyEventsView() {
 
             {/* Participants Modal */}
             {selectedEventId && (
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
-                    <div className="glass" style={{ width: '100%', maxWidth: '480px', padding: '2rem', borderRadius: '1.5rem', maxHeight: '80vh', overflowY: 'auto' }}>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1.5rem' }}>
+                    <div style={{ background: 'var(--background)', border: '1px solid var(--glass-border)', width: '100%', maxWidth: '500px', borderRadius: '2rem', padding: '2.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <h3 style={{ margin: 0 }}>Event Participants</h3>
-                            <button onClick={() => setSelectedEventId(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '2rem', cursor: 'pointer' }}>×</button>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Confirmed Participants</h3>
+                            <button onClick={() => setSelectedEventId(null)} style={{ background: 'var(--glass-border)', border: 'none', color: 'var(--foreground)', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>&times;</button>
                         </div>
 
                         {loadingParticipants ? (
-                            <div style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>Loading...</div>
+                            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--secondary)' }}>Fetching attendee list...</div>
                         ) : participants.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>No one has joined yet.</div>
+                            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--secondary)' }}>No one has signed up yet. Keep spreading the word!</div>
                         ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {participants.map(p => (
-                                    <div key={p._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', borderRadius: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <img src={p.profilePicture || 'https://via.placeholder.com/40'} alt={p.username} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>{p.username}</div>
-                                            <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>{p.email}</div>
+                                    <div key={p._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', borderRadius: '1.25rem', background: 'var(--glass-border)', border: '1px solid var(--glass-border)' }}>
+                                        <img src={p.profilePicture || 'https://via.placeholder.com/48'} alt={p.username} style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
+                                        <div>
+                                            <div style={{ fontWeight: '700', fontSize: '1rem' }}>{p.username}</div>
+                                            <div style={{ fontSize: '0.85rem', color: 'var(--secondary)' }}>{p.email}</div>
                                         </div>
                                     </div>
                                 ))}

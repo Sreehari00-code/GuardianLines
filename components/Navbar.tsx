@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './Navbar.module.css';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
     const { user, logout } = useAuth();
@@ -25,22 +26,23 @@ export default function Navbar() {
             </div>
 
             <div className={styles.actions} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <ThemeToggle />
                 {user ? (
                     <>
-                        <span style={{ fontSize: '0.9rem', color: '#cbd5e1' }}>Hi, {user.username}</span>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--secondary)' }}>Hi, {user.username}</span>
                         <button
                             onClick={logout}
                             className={styles.cta}
-                            style={{ background: 'rgba(255,255,255,0.1)', fontSize: '0.8rem', padding: '0.5rem 1rem' }}
+                            style={{ background: 'var(--glass-border)', color: 'var(--foreground)', fontSize: '0.8rem', padding: '0.5rem 1rem' }}
                         >
                             Logout
                         </button>
                     </>
                 ) : (
                     <>
-                        <Link href="/login" className={styles.link} style={{ marginRight: '1rem' }}>Login</Link>
+                        <Link href="/login" className={styles.link}>Login</Link>
                         <Link href="/signup" className={styles.cta}>
-                            Sign Up
+                            Join
                         </Link>
                     </>
                 )}

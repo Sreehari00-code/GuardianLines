@@ -1,17 +1,26 @@
 :root {
-  --background: #0f172a;
-  /* Deep Slate */
-  --foreground: #f8fafc;
-  --primary: #6366f1;
-  /* Indigo */
-  --secondary: #ec4899;
-  /* Pink */
-  --accent: #14b8a6;
-  /* Teal */
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --background: #000000;
+  --foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-invert: #000000;
+  --secondary: #a1a1aa;
+  --accent: #ffffff;
+  --glass-bg: rgba(0, 0, 0, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.15);
   --font-main: 'Inter', sans-serif;
   --max-width: 1200px;
+  --radius: 12px;
+}
+
+[data-theme='light'] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #000000;
+  --primary-invert: #ffffff;
+  --secondary: #404040;
+  --accent: #000000;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -62,7 +71,8 @@ a {
 }
 
 .gradient-text {
-  background: linear-gradient(to right, var(--primary), var(--secondary));
+  background: linear-gradient(to right, #333, #999);
+  /* Changed to grayscale gradient */
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

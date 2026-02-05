@@ -24,10 +24,11 @@
     font-size: 2rem;
     margin-bottom: 0.5rem;
     font-weight: 700;
+    color: var(--foreground);
 }
 
 .authSubtitle {
-    color: #94a3b8;
+    color: var(--secondary);
     font-size: 0.95rem;
 }
 
@@ -39,23 +40,24 @@
     display: block;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
-    color: #cbd5e1;
+    color: var(--foreground);
+    opacity: 0.9;
 }
 
 .inputField {
     width: 100%;
     padding: 0.9rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--background);
     border: 1px solid var(--glass-border);
     border-radius: 0.75rem;
-    color: white;
+    color: var(--foreground);
     transition: all 0.2s;
 }
 
 .inputField:focus {
     outline: none;
     border-color: var(--primary);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
 }
 
 .submitBtn {
@@ -63,7 +65,7 @@
     padding: 1rem;
     margin-top: 1rem;
     background: var(--primary);
-    color: white;
+    color: var(--primary-invert);
     border: none;
     border-radius: 0.75rem;
     font-weight: 700;
@@ -72,14 +74,15 @@
 }
 
 .submitBtn:hover {
-    background: #4f46e5;
+    background: var(--secondary);
+    color: var(--primary-invert);
     transform: translateY(-2px);
 }
 
 .switchText {
     text-align: center;
     margin-top: 1.5rem;
-    color: #94a3b8;
+    color: var(--secondary);
     font-size: 0.9rem;
 }
 

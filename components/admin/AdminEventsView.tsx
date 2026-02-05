@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import styles from '@/styles/Admin.module.css';
+import Link from 'next/link';
 
 export default function AdminEventsView() {
     const [events, setEvents] = useState<any[]>([]);
@@ -23,7 +25,7 @@ export default function AdminEventsView() {
         fetchEvents();
     }, []);
 
-    const toggleEventStatus = async (eventId: string, currentIsDisabled: boolean, disabledBy: string) => {
+    const toggleEventStatus = async (eventId: string, currentIsDisabled: boolean) => {
         const nextStatus = !currentIsDisabled;
 
         try {
@@ -49,86 +51,77 @@ export default function AdminEventsView() {
         e.code.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (loading) return <div style={{ color: '#6366f1' }}>Loading events...</div>;
+    if (loading) return <div style={{ color: 'var(--secondary)' }}>Syncing platform events...</div>;
 
     return (
-        <div className="glass" style={{ padding: '2rem', borderRadius: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Platform Events</h2>
-                <input
-                    type="text"
-                    placeholder="Search events..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        padding: '0.6rem 1rem',
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '0.75rem',
-                        color: 'white',
-                        width: '250px'
-                    }}
-                />
+        <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', gap: '2rem' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: '800' }}>Platform Moderation</h2>
+                <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                    <input
+                        type="text"
+                        placeholder="Search initiatives by name or code..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className={styles.input}
+                        style={{ paddingLeft: '3rem', marginBottom: 0 }}
+                    />
+                </div>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <div className={styles.tableContainer}>
+                <table className={styles.table}>
                     <thead>
-                        <tr style={{ color: '#94a3b8', fontSize: '0.9rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                            <th style={{ padding: '1rem' }}>Event</th>
-                            <th style={{ padding: '1rem' }}>Code</th>
-                            <th style={{ padding: '1rem' }}>Creator</th>
-                            <th style={{ padding: '1rem' }}>Status</th>
-                            <th style={{ padding: '1rem' }}>Action</th>
+                        <tr>
+                            <th>INITIATIVE</th>
+                            <th>MODERATION CODE</th>
+                            <th>ORGANIZER</th>
+                            <th>VISIBILITY</th>
+                            <th>OPERATIONS</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredEvents.map(event => (
-                            <tr key={event._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#cbd5e1' }}>
-                                <td style={{ padding: '1rem' }}>
-                                    <div style={{ fontWeight: 600, color: 'white' }}>{event.name}</div>
-                                    <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>{event.category?.name}</div>
+                        {filteredEvents.length === 0 ? (
+                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: 'var(--secondary)' }}>No events found in the database.</td></tr>
+                        ) : filteredEvents.map(event => (
+                            <tr key={event._id} style={{ opacity: event.isDisabled ? 0.6 : 1 }}>
+                                <td>
+                                    <div style={{ fontWeight: '700' }}>{event.name}</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{event.category?.name || 'Uncategorized'}</div>
                                 </td>
-                                <td style={{ padding: '1rem', fontFamily: 'monospace' }}>{event.code}</td>
-                                <td style={{ padding: '1rem' }}>{event.user?.username || 'Unknown'}</td>
-                                <td style={{ padding: '1rem' }}>
-                                    {event.isDisabled ? (
-                                        <span style={{
-                                            padding: '0.25rem 0.5rem',
-                                            background: 'rgba(239, 68, 68, 0.1)',
-                                            color: '#f87171',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.8rem'
-                                        }}>
-                                            Disabled by {event.disabledBy || 'System'}
+                                <td style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '1rem' }}>{event.code}</td>
+                                <td style={{ color: 'var(--secondary)' }}>{event.user?.username || 'Legacy System'}</td>
+                                <td>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: event.isDisabled ? '#f87171' : '#4ade80' }}></div>
+                                        <span style={{ fontSize: '0.85rem', fontWeight: '600', color: event.isDisabled ? '#f87171' : 'var(--foreground)' }}>
+                                            {event.isDisabled ? `LOCKED (${event.disabledBy})` : 'PUBLIC'}
                                         </span>
-                                    ) : (
-                                        <span style={{
-                                            padding: '0.25rem 0.5rem',
-                                            background: 'rgba(34, 197, 94, 0.1)',
-                                            color: '#4ade80',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.8rem'
-                                        }}>
-                                            Active
-                                        </span>
-                                    )}
+                                    </div>
                                 </td>
-                                <td style={{ padding: '1rem' }}>
-                                    <button
-                                        onClick={() => toggleEventStatus(event._id, event.isDisabled, event.disabledBy)}
-                                        style={{
-                                            padding: '0.5rem 1rem',
-                                            borderRadius: '0.5rem',
-                                            border: 'none',
-                                            background: event.isDisabled ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                            color: event.isDisabled ? '#4ade80' : '#f87171',
-                                            cursor: 'pointer',
-                                            fontSize: '0.85rem'
-                                        }}
-                                    >
-                                        {event.isDisabled ? 'Enable' : 'Disable'}
-                                    </button>
+                                <td>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <button
+                                            onClick={() => toggleEventStatus(event._id, event.isDisabled)}
+                                            style={{
+                                                padding: '0.6rem 1.2rem',
+                                                borderRadius: '0.75rem',
+                                                border: '1px solid var(--glass-border)',
+                                                background: event.isDisabled ? 'var(--foreground)' : 'transparent',
+                                                color: event.isDisabled ? 'var(--background)' : 'var(--foreground)',
+                                                cursor: 'pointer',
+                                                fontSize: '0.85rem',
+                                                fontWeight: '700',
+                                                transition: 'all 0.2s'
+                                            }}
+                                        >
+                                            {event.isDisabled ? 'Reinstate' : 'Moderate'}
+                                        </button>
+                                        <Link href={`/events/${event._id}`}>
+                                            <button className={styles.actionBtn} style={{ background: 'var(--glass-border)', color: 'var(--foreground)', margin: 0 }}>View</button>
+                                        </Link>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

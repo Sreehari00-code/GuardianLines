@@ -1,63 +1,138 @@
 .hero {
-  min-height: 80vh;
+  min-height: 85vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  padding: 4rem 1rem;
+  position: relative;
 }
 
 .title {
-  font-size: 4rem;
-  font-weight: 800;
-  line-height: 1.1;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 850;
+  line-height: 1;
   margin-bottom: 1.5rem;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
 }
 
 .subtitle {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 4vw, 1.25rem);
   color: #94a3b8;
-  max-width: 600px;
-  margin-bottom: 3rem;
+  max-width: 700px;
+  margin-bottom: 3.5rem;
   line-height: 1.6;
 }
 
-.grid {
+.heroButtons {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.section {
+  padding: 6rem 1rem;
+  width: 100%;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.sectionSubtitle {
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+/* Event Grid specific for Home */
+.eventGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   width: 100%;
-  margin-top: 4rem;
 }
 
 .card {
-  padding: 2rem;
-  border-radius: 1rem;
-  transition: transform 0.2s, background 0.2s;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-align: left;
+  border: 1px solid var(--glass-border);
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.03);
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary);
 }
 
 .card h3 {
   font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   color: var(--primary);
 }
 
 .card p {
   color: #94a3b8;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+
+.viewAllLink {
+  color: var(--accent);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: gap 0.2s;
+}
+
+.viewAllLink:hover {
+  gap: 0.8rem;
 }
 
 @media (max-width: 768px) {
-  .title {
-    font-size: 2.5rem;
+  .hero {
+    min-height: auto;
+    padding: 6rem 1rem 4rem;
   }
+
+  .section {
+    padding: 4rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .heroButtons {
+    width: 100%;
+  }
+
+  .heroButtons a {
+    width: 100%;
+    text-align: center;
+  }
+
 }

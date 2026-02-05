@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import styles from '@/styles/Dashboard.module.css';
+import styles from '@/styles/Event.module.css';
 import Head from 'next/head';
 import { useAuth } from '@/context/AuthContext';
 import ImageUpload from '@/components/ImageUpload';
+import CustomSelect from '@/components/forms/CustomSelect';
+import CustomDatePicker from '@/components/forms/CustomDatePicker';
+import StepCounter from '@/components/forms/StepCounter';
 
 export default function CreateEvent() {
     const router = useRouter();
@@ -73,91 +76,108 @@ export default function CreateEvent() {
         }
     };
 
-    if (authLoading || !user) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>;
+    if (authLoading || !user) return (
+        <div style={{ minHeight: '100vh', background: 'var(--background)', color: 'var(--foreground)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ fontWeight: '800', letterSpacing: '0.1em' }}>AUTHORIZING SESSION...</div>
+        </div>
+    );
 
     return (
-        <>
+        <div className={styles.container}>
             <Head>
-                <title>Create Event | GuardianLines</title>
+                <title>Initiate Movement | GuardianLines</title>
             </Head>
-            <div className={styles.container}>
-                <aside className={styles.sidebar}>
-                    <div className={styles.logoArea}>
-                        <h2 onClick={() => router.push('/')} style={{ cursor: 'pointer' }}>GuardianLines</h2>
+
+            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+                <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                    <div className={styles.badge}>
+                        Platform Registry
                     </div>
-                    <nav className={styles.nav}>
-                        <button className={styles.navItem} onClick={() => router.push('/dashboard')}>
-                            <span>🏠</span> Dashboard
-                        </button>
-                        <button className={`${styles.navItem} ${styles.active}`}>
-                            <span>✨</span> Create New
-                        </button>
-                    </nav>
-                </aside>
+                    <h1 style={{ fontSize: 'clamp(2rem, 6vw, 3.5rem)', fontWeight: '900', letterSpacing: '-0.04em', lineHeight: '1', marginBottom: '1rem' }}>Initiate a <span style={{ fontStyle: 'italic', fontWeight: '400' }}>Movement</span></h1>
+                    <p style={{ color: 'var(--secondary)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+                        Register your community initiative on our verified network. Accurate data ensures higher engagement.
+                    </p>
+                </div>
 
-                <main className={styles.mainContent}>
-                    <header className={styles.header}>
-                        <div className={styles.welcome}>
-                            <h1>Launch a <span className="gradient-text">Movement</span></h1>
-                            <p>Bring people together for a cause that matters.</p>
+                <form onSubmit={handleSubmit} style={{ animation: 'fadeIn 0.6s ease-out' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' }}>
+                        {/* Basic Information */}
+                        <div style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '2rem', padding: '2.5rem', height: 'fit-content' }}>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <span style={{ width: '8px', height: '8px', background: 'var(--foreground)', borderRadius: '50%' }}></span>
+                                Core Registry
+                            </h3>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>INITIATIVE NAME</label>
+                                <input name="name" required className={styles.input} onChange={handleChange} placeholder="e.g. Wildlife Preservation Workshop" />
+                            </div>
+
+                            <CustomSelect
+                                label="CATEGORY"
+                                options={categories.filter(cat => cat.isActive)}
+                                value={formData.category}
+                                onChange={(val) => setFormData(prev => ({ ...prev, category: val }))}
+                                placeholder="Select Category"
+                            />
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>IDENTIFIED LOCATION</label>
+                                <input name="location" required className={styles.input} onChange={handleChange} placeholder="City, Region or Virtual" />
+                            </div>
                         </div>
-                    </header>
 
-                    <form onSubmit={handleSubmit} style={{ maxWidth: '800px' }}>
-                        <div className={styles.grid}>
-                            <div className={styles.card} style={{ gridColumn: 'span 2' }}>
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Event Name</label>
-                                    <input name="name" required className={styles.inputField} onChange={handleChange} placeholder="e.g. Wildlife Preservation Workshop" />
-                                </div>
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Full Description</label>
-                                    <textarea name="description" className={styles.inputField} style={{ minHeight: '120px', resize: 'vertical' }} onChange={handleChange} placeholder="What is the mission? What should attendees expect?" />
-                                </div>
-                            </div>
+                        {/* Logistics */}
+                        <div style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '2rem', padding: '2.5rem', height: 'fit-content' }}>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <span style={{ width: '8px', height: '8px', background: 'var(--foreground)', borderRadius: '50%' }}></span>
+                                Logistics & Capacity
+                            </h3>
 
-                            <div className={styles.card}>
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Category</label>
-                                    <select name="category" className={styles.inputField} onChange={handleChange} value={formData.category}>
-                                        {categories.map(cat => (cat.isActive || cat._id === formData.category) && (
-                                            <option key={cat._id} value={cat._id}>{cat.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Date of Event</label>
-                                    <input type="date" name="date" required className={styles.inputField} onChange={handleChange} />
-                                </div>
-                                <div>
-                                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Max Participants</label>
-                                    <input type="number" name="maxParticipants" required className={styles.inputField} onChange={handleChange} placeholder="100" min="1" />
-                                </div>
-                            </div>
+                            <CustomDatePicker
+                                label="EXECUTION DATE"
+                                value={formData.date}
+                                onChange={(val) => setFormData(prev => ({ ...prev, date: val }))}
+                            />
 
-                            <div className={styles.card}>
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Location</label>
-                                    <input name="location" required className={styles.inputField} onChange={handleChange} placeholder="City, State or Virtual Link" />
-                                </div>
+                            <StepCounter
+                                label="CAPACITY (PARTICIPANTS)"
+                                value={parseInt(formData.maxParticipants as string) || 0}
+                                onChange={(val) => setFormData(prev => ({ ...prev, maxParticipants: val.toString() }))}
+                            />
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>MEDIA ASSET (COVER)</label>
                                 <ImageUpload
-                                    label="Cover Image"
+                                    label="Upload JPG/PNG"
                                     onUpload={(url) => setFormData(prev => ({ ...prev, image: url }))}
                                 />
                             </div>
                         </div>
 
-                        <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                            <button type="button" onClick={() => router.back()} className={styles.navItem} style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
-                                Cancel
-                            </button>
-                            <button type="submit" className="cta" disabled={loading} style={{ border: 'none', padding: '0.75rem 2.5rem' }}>
-                                {loading ? 'Publishing...' : 'Publish Event'}
-                            </button>
+                        {/* Description - Full Width */}
+                        <div style={{ gridColumn: '1 / -1', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '2rem', padding: '2.5rem' }}>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <span style={{ width: '8px', height: '8px', background: 'var(--foreground)', borderRadius: '50%' }}></span>
+                                Mission Statement
+                            </h3>
+                            <div className={styles.formGroup} style={{ margin: 0 }}>
+                                <label className={styles.label}>DESCRIBE THE IMPACT AND EXPECTATIONS</label>
+                                <textarea name="description" className={styles.textarea} style={{ minHeight: '180px' }} onChange={handleChange} placeholder="Establish the mission, goals, and required preparation for participants..." />
+                            </div>
                         </div>
-                    </form>
-                </main>
+                    </div>
+
+                    <div style={{ marginTop: '4rem', display: 'flex', justifyContent: 'center', gap: '1.5rem' }}>
+                        <button type="button" onClick={() => router.back()} style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--foreground)', padding: '1rem 3rem', borderRadius: '50px', fontWeight: '800', cursor: 'pointer', transition: 'all 0.2s' }}>
+                            ABORT
+                        </button>
+                        <button type="submit" disabled={loading} style={{ background: 'var(--foreground)', color: 'var(--background)', border: 'none', padding: '1rem 4rem', borderRadius: '50px', fontWeight: '900', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 10px 30px rgba(255,255,255,0.1)' }}>
+                            {loading ? 'SYNCHRONIZING...' : 'LAUNCH INITIATIVE'}
+                        </button>
+                    </div>
+                </form>
             </div>
-        </>
+        </div>
     );
 }

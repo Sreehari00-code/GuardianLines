@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (method) {
         case 'GET':
             try {
-                const categories = await Category.find({ isActive: true }).sort({ name: 1 }).select('name');
+                const categories = await Category.find({ isActive: true }).sort({ name: 1 });
                 res.status(200).json({ success: true, categories }); // Changed structure to match user req { categories }
             } catch (error) {
                 res.status(400).json({ success: false });

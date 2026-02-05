@@ -30,7 +30,7 @@ export default function DirectMessageModal({ isOpen, onClose, recipientId, recip
     useEffect(() => {
         if (isOpen) {
             fetchHistory();
-            const interval = setInterval(fetchHistory, 3000); // Poll every 3 seconds
+            const interval = setInterval(fetchHistory, 3000);
             return () => clearInterval(interval);
         }
     }, [isOpen, recipientId, eventId]);
@@ -68,22 +68,23 @@ export default function DirectMessageModal({ isOpen, onClose, recipientId, recip
     if (!isOpen) return null;
 
     return (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
-            <div className="glass" style={{ width: '400px', height: '500px', display: 'flex', flexDirection: 'column', borderRadius: '1.5rem', overflow: 'hidden' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1rem' }}>
+            <div style={{ background: 'var(--background)', border: '1px solid var(--glass-border)', width: '100%', maxWidth: '450px', height: '600px', display: 'flex', flexDirection: 'column', borderRadius: '2rem', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.4)' }}>
                 {/* Header */}
-                <div style={{ padding: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--glass-bg)' }}>
                     <div>
-                        <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>Chat with {recipientName}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Direct Message</div>
+                        <div style={{ fontWeight: '800', fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Secure Channel</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--secondary)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.2rem' }}>TO: {recipientName.toUpperCase()}</div>
                     </div>
-                    <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                    <button onClick={onClose} style={{ background: 'var(--glass-border)', border: 'none', color: 'var(--foreground)', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>&times;</button>
                 </div>
 
                 {/* Messages */}
-                <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {messages.length === 0 ? (
-                        <div style={{ textAlign: 'center', marginTop: 'auto', marginBottom: 'auto', color: '#64748b', fontSize: '0.875rem' }}>
-                            No messages yet. Say hello!
+                        <div style={{ textAlign: 'center', margin: 'auto', color: 'var(--secondary)', fontSize: '0.9rem' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: '1rem opacity: 0.5' }}>💬</div>
+                            Establish communication with the organizer.
                         </div>
                     ) : (
                         messages.map((msg, i) => {
@@ -91,24 +92,25 @@ export default function DirectMessageModal({ isOpen, onClose, recipientId, recip
                             return (
                                 <div key={i} style={{
                                     maxWidth: '80%',
-                                    padding: '0.75rem 1rem',
-                                    borderRadius: '1rem',
+                                    padding: '1rem 1.25rem',
+                                    borderRadius: isMine ? '1.5rem 1.5rem 0 1.5rem' : '0 1.5rem 1.5rem 1.5rem',
                                     alignSelf: isMine ? 'flex-end' : 'flex-start',
-                                    background: isMine ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.05)',
-                                    color: isMine ? '#818cf8' : '#cbd5e1',
-                                    fontSize: '0.9rem',
-                                    border: isMine ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid rgba(255,255,255,0.05)',
-                                    position: 'relative'
+                                    background: isMine ? 'var(--primary)' : 'var(--glass-border)',
+                                    color: isMine ? 'var(--primary-invert)' : 'var(--foreground)',
+                                    fontSize: '0.95rem',
+                                    fontWeight: '500',
+                                    position: 'relative',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                                 }}>
                                     {msg.text}
                                     {isMine && (
                                         <span style={{
-                                            fontSize: '0.7rem',
-                                            marginLeft: '0.5rem',
-                                            opacity: 0.7,
-                                            color: msg.isRead ? 'var(--accent)' : 'inherit'
+                                            fontSize: '0.6rem',
+                                            marginLeft: '0.75rem',
+                                            opacity: 0.6,
+                                            fontWeight: '800'
                                         }}>
-                                            {msg.isRead ? '✓✓' : '✓'}
+                                            {msg.isRead ? 'READ' : 'SENT'}
                                         </span>
                                     )}
                                 </div>
@@ -117,19 +119,22 @@ export default function DirectMessageModal({ isOpen, onClose, recipientId, recip
                     )}
                 </div>
 
-                {/* Input */}
-                <form onSubmit={handleSend} style={{ padding: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+                {/* Input Area */}
+                <form onSubmit={handleSend} style={{ padding: '1.5rem 2rem', borderTop: '1px solid var(--glass-border)', background: 'var(--glass-bg)' }}>
                     <div style={{ display: 'flex', gap: '0.75rem' }}>
                         <input
                             type="text"
                             value={text}
                             onChange={(e) => setText(e.target.value)}
-                            placeholder="Type a message..."
-                            className={styles.inputField}
-                            style={{ margin: 0, padding: '0.625rem 1rem' }}
+                            placeholder="Type an encrypted message..."
+                            style={{ flex: 1, background: 'var(--background)', border: '1px solid var(--glass-border)', color: 'var(--foreground)', padding: '0.875rem 1.25rem', borderRadius: '1rem', outline: 'none', fontSize: '0.95rem' }}
                         />
-                        <button type="submit" disabled={loading || !text.trim()} className="cta" style={{ border: 'none', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {loading ? '...' : '✈️'}
+                        <button
+                            type="submit"
+                            disabled={loading || !text.trim()}
+                            style={{ background: 'var(--primary)', color: 'var(--primary-invert)', border: 'none', width: '48px', height: '48px', borderRadius: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s', flexShrink: 0 }}
+                        >
+                            {loading ? '...' : '→'}
                         </button>
                     </div>
                 </form>

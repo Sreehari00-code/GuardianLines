@@ -59,18 +59,21 @@ export default function UserManagement() {
     );
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <input
-                    type="text"
-                    placeholder="Search users..."
-                    className={styles.input}
-                    style={{ maxWidth: '300px', marginBottom: 0 }}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-                <button onClick={fetchUsers} className={styles.actionBtn} style={{ background: 'var(--accent)', color: 'white' }}>
-                    Refresh
+        <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
+                <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                    <input
+                        type="text"
+                        placeholder="Search users by name or email..."
+                        className={styles.input}
+                        style={{ paddingLeft: '3rem' }}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                <button onClick={fetchUsers} className={styles.actionBtn} style={{ background: 'var(--primary)', color: 'var(--primary-invert)', margin: 0, padding: '0.9rem 2rem' }}>
+                    Refresh Database
                 </button>
             </div>
 
@@ -78,50 +81,62 @@ export default function UserManagement() {
                 <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th>User</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>IDENTIFIER</th>
+                            <th>EMAIL ADDRESS</th>
+                            <th>ROLE</th>
+                            <th>STATUS</th>
+                            <th>OPERATIONS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={5} style={{ textAlign: 'center' }}>Loading...</td></tr>
+                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: 'var(--secondary)' }}>Syncing user data...</td></tr>
+                        ) : filteredUsers.length === 0 ? (
+                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem', color: 'var(--secondary)' }}>No matching users found.</td></tr>
                         ) : filteredUsers.map(user => (
-                            <tr key={user._id} style={{ opacity: user.isActive ? 1 : 0.5 }}>
-                                <td style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div style={{ width: 30, height: 30, borderRadius: '50%', background: '#475569', overflow: 'hidden' }}>
-                                        {user.profilePicture && <img src={user.profilePicture} alt="" style={{ width: '100%', height: '100%' }} />}
-                                    </div>
-                                    {user.username}
-                                </td>
-                                <td>{user.email}</td>
-                                <td>{user.role}</td>
+                            <tr key={user._id} style={{ opacity: user.isActive ? 1 : 0.6 }}>
                                 <td>
-                                    <span style={{
-                                        padding: '0.25rem 0.5rem',
-                                        borderRadius: '0.25rem',
-                                        background: user.isActive ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                        color: user.isActive ? '#4ade80' : '#fca5a5',
-                                        fontSize: '0.8rem'
-                                    }}>
-                                        {user.isActive ? 'Active' : 'Disabled'}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <div style={{ width: 40, height: 40, borderRadius: '12px', background: 'var(--glass-border)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+                                            {user.profilePicture ? <img src={user.profilePicture} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
+                                        </div>
+                                        <span style={{ fontWeight: '700' }}>{user.username}</span>
+                                    </div>
+                                </td>
+                                <td style={{ color: 'var(--secondary)', fontSize: '0.9rem' }}>{user.email}</td>
+                                <td>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: '800', background: 'var(--glass-border)', padding: '0.3rem 0.6rem', borderRadius: '4px', textTransform: 'uppercase' }}>
+                                        {user.role}
                                     </span>
                                 </td>
                                 <td>
-                                    <button
-                                        className={`${styles.actionBtn} ${user.isActive ? styles.btnDisable : styles.btnEnable}`}
-                                        onClick={() => toggleStatus(user)}
-                                    >
-                                        {user.isActive ? 'Disable' : 'Enable'}
-                                    </button>
-                                    <button
-                                        className={`${styles.actionBtn} ${styles.btnDelete}`}
-                                        onClick={() => deleteUser(user._id)}
-                                    >
-                                        Delete
-                                    </button>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: user.isActive ? '#4ade80' : '#f87171' }}></div>
+                                        <span style={{ fontSize: '0.85rem', fontWeight: '600', color: user.isActive ? 'var(--foreground)' : 'var(--secondary)' }}>
+                                            {user.isActive ? 'Active' : 'Locked'}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <button
+                                            className={styles.actionBtn}
+                                            style={{
+                                                background: user.isActive ? 'var(--foreground)' : 'var(--background)',
+                                                color: user.isActive ? 'var(--background)' : 'var(--foreground)',
+                                                border: '1px solid var(--glass-border)'
+                                            }}
+                                            onClick={() => toggleStatus(user)}
+                                        >
+                                            {user.isActive ? 'Suspend' : 'Reinstate'}
+                                        </button>
+                                        <button
+                                            className={`${styles.actionBtn} ${styles.btnDelete}`}
+                                            onClick={() => deleteUser(user._id)}
+                                        >
+                                            Purge
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

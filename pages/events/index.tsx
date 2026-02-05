@@ -9,34 +9,46 @@ export default function Events({ events }: { events: any[] }) {
     return (
         <>
             <Head>
-                <title>GuardianLines | Events</title>
+                <title>Initiatives | GuardianLines</title>
             </Head>
 
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h1>Upcoming Impact <span className="gradient-text">Events</span></h1>
-                    <p style={{ color: '#94a3b8', maxWidth: '600px', margin: '0 auto' }}>
-                        Join hand-picked events from verified NGOs. Whether you want to volunteer, donate, or learn, your journey starts here.
+                    <div className="badge" style={{ marginBottom: '1.5rem', background: 'var(--glass-border)', color: 'var(--foreground)', padding: '0.5rem 1rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'inline-block' }}>
+                        Discover Impact
+                    </div>
+                    <h1>Join the <span style={{ fontWeight: 400, fontStyle: 'italic' }}>Movement</span>.</h1>
+                    <p>
+                        Discover verified community initiatives. Whether you want to volunteer, contribute, or learn, find your path to making a difference.
                     </p>
-                    <div style={{ marginTop: '2rem' }}>
-                        <Link href="/events/create" style={{ fontSize: '0.9rem', color: 'var(--accent)', textDecoration: 'underline' }}>
-                            Are you an NGO? List your event
+                    <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'center', gap: '1.5rem' }}>
+                        <Link href="/events/create">
+                            <button style={{ background: 'var(--foreground)', color: 'var(--background)', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'transform 0.2s' }}>
+                                Start an Initiative
+                            </button>
                         </Link>
+                        <button style={{ background: 'var(--glass-bg)', color: 'var(--foreground)', border: '1px solid var(--glass-border)', padding: '1rem 2rem', borderRadius: '50px', fontWeight: '700', cursor: 'pointer' }}>
+                            Filter Categories
+                        </button>
                     </div>
                 </div>
 
                 {events.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '4rem', background: 'rgba(255,255,255,0.05)', borderRadius: '1rem' }}>
-                        <h3>No events found yet.</h3>
-                        <p>Be the first to create one!</p>
-                        <Link href="/events/create" className="cta" style={{ display: 'inline-block', marginTop: '1rem' }}>
-                            Create Event
+                    <div style={{ textAlign: 'center', padding: '8rem 2rem', background: 'var(--glass-bg)', borderRadius: '2rem', border: '1px dashed var(--glass-border)' }}>
+                        <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>No active events found.</h3>
+                        <p style={{ color: 'var(--secondary)', marginBottom: '2.5rem' }}>Be the catalyst for change. Create the first movement in your area.</p>
+                        <Link href="/events/create">
+                            <button style={{ background: 'var(--primary)', color: 'var(--primary-invert)', border: 'none', padding: '1rem 2.5rem', borderRadius: '50px', fontWeight: '700', cursor: 'pointer' }}>
+                                Launch Event
+                            </button>
                         </Link>
                     </div>
                 ) : (
                     <div className={styles.grid}>
                         {events.map((event) => (
-                            <EventCard key={event._id} event={event} />
+                            <div key={event._id} style={{ animation: 'fadeIn 0.6s ease-out' }}>
+                                <EventCard event={event} />
+                            </div>
                         ))}
                     </div>
                 )}
@@ -46,20 +58,17 @@ export default function Events({ events }: { events: any[] }) {
 }
 
 export async function getServerSideProps() {
-    await dbConnect();
+    try {
+        await dbConnect();
+        const result = await Event.find({ isDisabled: { $ne: true } })
+            .populate('category')
+            .populate('user', 'username')
+            .sort({ date: 1 });
 
-    // Find all events and serialize to JSON
-    // Populate category for display
-    // Only show events that are not disabled
-    const result = await Event.find({ isDisabled: { $ne: true } })
-        .populate('category')
-        .populate('user', 'username')
-        .sort({ date: 1 });
-
-    // Use JSON parse/stringify for safer serialization of ObjectIds/Dates
-    const events = JSON.parse(JSON.stringify(result));
-
-    return {
-        props: { events },
-    };
+        const events = JSON.parse(JSON.stringify(result));
+        return { props: { events } };
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        return { props: { events: [] } };
+    }
 }

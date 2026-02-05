@@ -1,9 +1,12 @@
 .main {
     min-height: 100vh;
     padding-top: 80px;
-    /* Match Navbar height */
     display: flex;
     flex-direction: column;
+}
+
+.adminMain {
+    padding-top: 0;
 }
 
 .content {
@@ -12,6 +15,14 @@
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 2rem;
+    position: relative;
+}
+
+.adminContent {
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     position: relative;
 }
 
@@ -24,14 +35,14 @@
     height: 100vh;
     z-index: -1;
     overflow: hidden;
-    background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 20%);
+    background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 20%);
 }
 
 .blob {
     position: absolute;
     filter: blur(80px);
-    opacity: 0.4;
+    opacity: 0.1;
     border-radius: 50%;
     animation: float 20s infinite ease-in-out;
 }

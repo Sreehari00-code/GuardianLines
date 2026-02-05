@@ -28,37 +28,41 @@ function SingleComment({ comment, allComments, onReply, user, depth }: CommentPr
 
     return (
         <div style={{
-            marginBottom: '1rem',
-            borderLeft: depth > 0 ? '1px solid rgba(255,255,255,0.1)' : 'none',
-            paddingLeft: depth > 0 ? '1rem' : '0',
-            marginTop: depth === 0 ? '2rem' : '0.5rem'
+            marginBottom: '1.5rem',
+            borderLeft: depth > 0 ? '2px solid var(--glass-border)' : 'none',
+            paddingLeft: depth > 0 ? '1.5rem' : '0',
+            marginTop: depth === 0 ? '2.5rem' : '1rem'
         }}>
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                <img
-                    src={comment.user?.profilePicture || 'https://via.placeholder.com/32'}
-                    alt={comment.user?.username}
-                    style={{ width: depth === 0 ? '32px' : '24px', height: depth === 0 ? '32px' : '24px', borderRadius: '50%', objectFit: 'cover' }}
-                />
-                <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                        <span style={{ fontWeight: '600', fontSize: depth === 0 ? '0.95rem' : '0.85rem' }}>{comment.user?.username}</span>
-                        <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                            {new Date(comment.createdAt).toLocaleDateString()}
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <div style={{ width: depth === 0 ? '44px' : '32px', height: depth === 0 ? '44px' : '32px', borderRadius: '12px', background: 'var(--glass-border)', overflow: 'hidden', flexShrink: 0 }}>
+                    <img
+                        src={comment.user?.profilePicture || `https://ui-avatars.com/api/?name=${comment.user?.username}&background=random`}
+                        alt={comment.user?.username}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                        <span style={{ fontWeight: '800', fontSize: depth === 0 ? '1rem' : '0.9rem', color: 'var(--foreground)' }}>{comment.user?.username}</span>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--secondary)', fontWeight: '700' }}>
+                            {new Date(comment.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                         </span>
                     </div>
-                    <p style={{ color: '#cbd5e1', fontSize: depth === 0 ? '1rem' : '0.9rem', lineHeight: '1.5' }}>{comment.text}</p>
+                    <p style={{ color: 'var(--foreground)', fontSize: depth === 0 ? '1.05rem' : '0.95rem', lineHeight: '1.6', fontWeight: '500' }}>{comment.text}</p>
 
                     {user && (
                         <button
                             onClick={() => setIsReplying(!isReplying)}
                             style={{
-                                background: 'none',
+                                background: 'transparent',
                                 border: 'none',
-                                color: 'var(--accent)',
-                                fontSize: '0.8rem',
-                                padding: '0.25rem 0',
+                                color: 'var(--secondary)',
+                                fontSize: '0.75rem',
+                                padding: '0.5rem 0',
                                 cursor: 'pointer',
-                                fontWeight: '500'
+                                fontWeight: '800',
+                                letterSpacing: '0.05em',
+                                textTransform: 'uppercase'
                             }}
                         >
                             Reply
@@ -66,42 +70,44 @@ function SingleComment({ comment, allComments, onReply, user, depth }: CommentPr
                     )}
 
                     {isReplying && (
-                        <div style={{ marginTop: '0.75rem' }}>
+                        <div style={{ marginTop: '1rem', animation: 'fadeIn 0.2s ease-out' }}>
                             <textarea
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
-                                placeholder="Your reply..."
+                                placeholder="Your perspective..."
                                 style={{
                                     width: '100%',
-                                    padding: '0.75rem',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    borderRadius: '0.5rem',
-                                    color: 'white',
-                                    fontSize: '0.9rem',
-                                    minHeight: '60px',
-                                    marginBottom: '0.5rem'
+                                    padding: '1rem',
+                                    background: 'var(--background)',
+                                    border: '1px solid var(--glass-border)',
+                                    borderRadius: '1rem',
+                                    color: 'var(--foreground)',
+                                    fontSize: '0.95rem',
+                                    minHeight: '80px',
+                                    marginBottom: '0.75rem',
+                                    outline: 'none',
+                                    resize: 'none'
                                 }}
                             />
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', gap: '0.75rem' }}>
                                 <button
                                     onClick={handleReplySubmit}
                                     disabled={loading || !replyText.trim()}
-                                    style={{ background: 'var(--accent)', color: 'white', border: 'none', padding: '0.3rem 1rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                    style={{ background: 'var(--foreground)', color: 'var(--background)', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '0.75rem', cursor: 'pointer', fontSize: '0.8rem', fontWeight: '800' }}
                                 >
-                                    {loading ? 'Posting...' : 'Post Reply'}
+                                    {loading ? 'POSTING...' : 'DISPATCH'}
                                 </button>
                                 <button
                                     onClick={() => setIsReplying(false)}
-                                    style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '0.3rem 1rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                    style={{ background: 'var(--glass-border)', color: 'var(--foreground)', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '0.75rem', cursor: 'pointer', fontSize: '0.8rem', fontWeight: '800' }}
                                 >
-                                    Cancel
+                                    CANCEL
                                 </button>
                             </div>
                         </div>
                     )}
 
-                    <div style={{ marginTop: '0.5rem' }}>
+                    <div>
                         {replies.map(reply => (
                             <SingleComment
                                 key={reply._id}
@@ -163,50 +169,54 @@ export default function CommentSection({ eventId }: { eventId: string }) {
     const rootComments = comments.filter(c => !c.parentId);
 
     return (
-        <div style={{ marginTop: '4rem', paddingTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '2rem' }}>Discussion</h3>
-
+        <div style={{ marginTop: '0rem' }}>
             {user ? (
-                <div style={{ marginBottom: '3rem' }}>
+                <div style={{ marginBottom: '4rem', background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--glass-border)' }}>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '900', color: 'var(--secondary)', letterSpacing: '0.1em', marginBottom: '1rem', textTransform: 'uppercase' }}>Join the Dialogue</label>
                     <textarea
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="What's on your mind?"
+                        placeholder="Contribute your thoughts to this movement..."
                         style={{
                             width: '100%',
                             padding: '1.25rem',
-                            background: 'rgba(255,255,255,0.03)',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            borderRadius: '1rem',
-                            color: 'white',
-                            minHeight: '100px',
+                            background: 'var(--background)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '1.25rem',
+                            color: 'var(--foreground)',
+                            minHeight: '120px',
                             resize: 'none',
-                            fontSize: '1rem',
-                            marginBottom: '1rem',
+                            fontSize: '1.1rem',
+                            marginBottom: '1.5rem',
                             outline: 'none',
+                            fontWeight: '500'
                         }}
                     />
-                    <button
-                        className="cta"
-                        disabled={loading || !newComment.trim()}
-                        onClick={() => {
-                            setLoading(true);
-                            handlePostComment(newComment).then(() => setLoading(false));
-                        }}
-                        style={{ border: 'none', padding: '0.75rem 2rem' }}
-                    >
-                        {loading ? 'Sharing...' : 'Share Comment'}
-                    </button>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <button
+                            disabled={loading || !newComment.trim()}
+                            onClick={() => {
+                                setLoading(true);
+                                handlePostComment(newComment).then(() => setLoading(false));
+                            }}
+                            style={{ background: 'var(--foreground)', color: 'var(--background)', border: 'none', padding: '1rem 3rem', borderRadius: '50px', fontWeight: '900', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.9rem' }}
+                        >
+                            {loading ? 'SYNCHRONIZING...' : 'SHARE PERSPECTIVE'}
+                        </button>
+                    </div>
                 </div>
             ) : (
-                <div style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', marginBottom: '3rem' }}>
-                    <p style={{ color: '#94a3b8' }}>Sign in to join the conversation.</p>
+                <div style={{ padding: '3rem', background: 'var(--glass-bg)', borderRadius: '2rem', border: '1px solid var(--glass-border)', textAlign: 'center', marginBottom: '4rem' }}>
+                    <p style={{ color: 'var(--secondary)', fontWeight: '700' }}>AUTHENTICATION REQUIRED TO JOIN DISCUSSION.</p>
                 </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {rootComments.length === 0 ? (
-                    <p style={{ color: '#64748b', textAlign: 'center', padding: '2rem' }}>No comments yet. Start the thread!</p>
+                    <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--secondary)', border: '1px dashed var(--glass-border)', borderRadius: '2rem' }}>
+                        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>💬</div>
+                        <p style={{ fontWeight: '700' }}>NO ACTIVE DISCOURSES FOUND.</p>
+                    </div>
                 ) : rootComments.map(comment => (
                     <SingleComment
                         key={comment._id}

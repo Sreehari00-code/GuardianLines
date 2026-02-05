@@ -35,7 +35,7 @@ async function handler(
                 },
             ],
             mode: 'payment',
-            success_url: `${req.headers.origin}/events/${eventId}?success=true`,
+            success_url: `${req.headers.origin}/events/${eventId}?success=true&session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin}/events/${eventId}?canceled=true`,
             metadata: {
                 eventId,

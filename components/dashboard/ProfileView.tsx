@@ -49,63 +49,74 @@ export default function ProfileView() {
     };
 
     return (
-        <div className={styles.profileGrid}>
-            <div style={{ textAlign: 'center' }}>
-                <img
-                    src={profilePicture || 'https://via.placeholder.com/150'}
-                    alt="Profile"
-                    style={{ width: '160px', height: '160px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1.5rem', border: '4px solid rgba(99, 102, 241, 0.2)', padding: '4px' }}
-                />
-                <ImageUpload
-                    onUpload={setProfilePicture}
-                    currentImage={profilePicture}
-                    label="Change Photo"
-                />
-            </div>
+        <div className={styles.bentoCard} style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{ marginBottom: '2rem' }}>Account Settings</h2>
 
-            <div>
-                <form onSubmit={handleUpdate} style={{ maxWidth: '500px' }}>
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Full Name / Username</label>
-                        <input
-                            type="text"
-                            className={styles.inputField}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
+            <div className={styles.dashboardGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{ position: 'relative', width: '180px', height: '180px', margin: '0 auto 2rem' }}>
+                        <img
+                            src={profilePicture || 'https://via.placeholder.com/150'}
+                            alt="Profile"
+                            style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '4px solid var(--glass-border)', padding: '4px' }}
                         />
                     </div>
+                    <ImageUpload
+                        onUpload={setProfilePicture}
+                        currentImage={profilePicture}
+                        label="Change Photo"
+                    />
+                </div>
 
-                    <div style={{ marginBottom: '2rem' }}>
-                        <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Email Address</label>
-                        <input
-                            type="email"
-                            className={styles.inputField}
-                            value={user?.email || ''}
-                            disabled
-                            style={{ opacity: 0.5, cursor: 'not-allowed' }}
-                        />
-                    </div>
-
-                    {message && (
-                        <div style={{ padding: '0.75rem 1rem', borderRadius: '0.75rem', background: message.includes('success') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: message.includes('success') ? '#4ade80' : '#f87171', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                            {message}
+                <div>
+                    <form onSubmit={handleUpdate} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--secondary)', fontWeight: '600' }}>DISPLAY NAME</label>
+                            <input
+                                type="text"
+                                className={styles.inputField}
+                                style={{ background: 'var(--background)', border: '1px solid var(--glass-border)', color: 'var(--foreground)', padding: '1rem', borderRadius: '1rem', width: '100%', outline: 'none' }}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
                         </div>
-                    )}
 
-                    <button type="submit" disabled={loading} className="cta" style={{ border: 'none', width: 'auto', padding: '0.75rem 2rem' }}>
-                        {loading ? 'Saving...' : 'Save Settings'}
-                    </button>
-                </form>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--secondary)', fontWeight: '600' }}>EMAIL ADDRESS</label>
+                            <input
+                                type="email"
+                                className={styles.inputField}
+                                style={{ background: 'var(--background)', border: '1px solid var(--glass-border)', color: 'var(--foreground)', padding: '1rem', borderRadius: '1rem', width: '100%', opacity: 0.5, cursor: 'not-allowed' }}
+                                value={user?.email || ''}
+                                disabled
+                            />
+                        </div>
 
-                <div style={{ marginTop: '5rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    <h4 style={{ color: '#f87171', marginBottom: '0.5rem', fontSize: '1rem' }}>Nuclear Option</h4>
-                    <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-                        Once you delete your account, there is no going back. Please be certain.
-                    </p>
-                    <button onClick={handleDelete} style={{ background: 'transparent', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', fontSize: '0.875rem' }}>
-                        Delete account
-                    </button>
+                        {message && (
+                            <div style={{ padding: '1rem', borderRadius: '1rem', background: message.includes('success') ? 'rgba(255, 255, 255, 0.05)' : 'rgba(239, 68, 68, 0.05)', color: message.includes('success') ? 'var(--foreground)' : '#f87171', border: '1px solid var(--glass-border)', fontSize: '0.9rem' }}>
+                                {message}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            style={{ background: 'var(--primary)', color: 'var(--primary-invert)', border: 'none', padding: '1rem 2rem', borderRadius: '1rem', fontWeight: '700', cursor: 'pointer', marginTop: '1rem' }}
+                        >
+                            {loading ? 'Saving Changes...' : 'Save Settings'}
+                        </button>
+                    </form>
+
+                    <div style={{ marginTop: '4rem', padding: '2rem', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '1.5rem', background: 'rgba(239, 68, 68, 0.02)' }}>
+                        <h4 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>Danger Zone</h4>
+                        <p style={{ color: 'var(--secondary)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                            Permanently delete your account and all associated data.
+                        </p>
+                        <button onClick={handleDelete} style={{ background: 'transparent', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '0.6rem 1.2rem', borderRadius: '0.75rem', cursor: 'pointer', fontWeight: '600' }}>
+                            Delete Account
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
