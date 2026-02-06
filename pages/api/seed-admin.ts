@@ -10,7 +10,7 @@ export default async function handler(
     try {
         await dbConnect();
 
-        const email = 'adminpnly@gmail.com';
+        const email = 'adminonly@gmail.com';
         const password = 'AdminOnly';
         const username = 'AdminOnly';
         const existingUser = await User.findOne({ email });
@@ -33,4 +33,5 @@ export default async function handler(
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
     }
+
 }

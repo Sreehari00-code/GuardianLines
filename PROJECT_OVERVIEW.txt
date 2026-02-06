@@ -1,0 +1,14 @@
+PROJECT OVERVIEW
+
+GuardianLines is a web-based community platform that brings event management and fundraising into a single, streamlined experience. It connects community members, organizers, and administrators through a unified interface where users can discover events, join or leave activities, donate to causes, and communicate in real time. The goal is to strengthen local engagement by making community participation and giving as easy as booking a modern online service.
+
+The platform is built with Next.js and React for a fast, responsive user experience, while server-side API routes handle business logic and secure workflows. MongoDB provides flexible storage for users, events, categories, donations, messages, and participation records. Stripe powers secure payments for donations, and JWT-based authentication ensures safe access control across the system. File uploads (such as profile or event images) are supported through Multer, enabling richer community content.
+
+GuardianLines emphasizes trust, transparency, and usability. It offers structured event management, verified participation tracking, and a secure donation flow, supported by an admin dashboard for oversight. In short, it is a modern, scalable community platform designed to simplify how people organize, participate in, and support local initiatives.
+
+FORMATTING NOTES (for Word)
+Font: Times New Roman
+Size: 12
+Paragraph: Spacing before & after 6 point, Justified
+Line Spacing: 1.5
+Page No: Bottom (Right side)

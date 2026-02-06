@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/Admin.module.css';
 import Link from 'next/link';
+import ToastContainer, { useToast } from '@/components/Toast';
 
 export default function AdminEventsView() {
     const [events, setEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const { toasts, showToast, removeToast } = useToast();
 
     const fetchEvents = async () => {
         try {
@@ -39,10 +41,10 @@ export default function AdminEventsView() {
             if (res.ok) {
                 fetchEvents();
             } else {
-                alert(data.message || 'Action failed');
+                showToast(data.message || 'Action failed', 'error');
             }
         } catch (err) {
-            alert('Error toggling event status');
+            showToast('Error toggling event status', 'error');
         }
     };
 
@@ -55,6 +57,7 @@ export default function AdminEventsView() {
 
     return (
         <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', gap: '2rem' }}>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: '800' }}>Platform Moderation</h2>
                 <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>

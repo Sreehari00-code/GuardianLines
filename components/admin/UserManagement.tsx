@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/Admin.module.css';
+import ToastContainer, { useToast } from '@/components/Toast';
 
 export default function UserManagement() {
     const [users, setUsers] = useState<any[]>([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const { toasts, showToast, removeToast } = useToast();
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -35,7 +37,7 @@ export default function UserManagement() {
                 body: JSON.stringify({ isActive: !user.isActive })
             });
             if (res.ok) fetchUsers();
-            else alert('Failed to update status');
+            else showToast('Failed to update status', 'error');
         } catch (error) {
             console.error(error);
         }
@@ -47,7 +49,7 @@ export default function UserManagement() {
         try {
             const res = await fetch(`/api/auth/user/${id}`, { method: 'DELETE' });
             if (res.ok) fetchUsers();
-            else alert('Failed to delete user');
+            else showToast('Failed to delete user', 'error');
         } catch (error) {
             console.error(error);
         }
@@ -60,6 +62,7 @@ export default function UserManagement() {
 
     return (
         <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
                 <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
                     <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>

@@ -9,10 +9,12 @@ import CommentSection from '@/components/CommentSection';
 import DirectMessageModal from '@/components/DirectMessageModal';
 import stripe from '../../lib/stripe';
 import Donation from '../../models/Donation';
+import ToastContainer, { useToast } from '@/components/Toast';
 
 export default function EventDetail({ event }: { event: any }) {
     const router = useRouter();
     const { user } = useAuth();
+    const { toasts, showToast, removeToast } = useToast();
     const [showDM, setShowDM] = useState(false);
     const [joining, setJoining] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
@@ -31,7 +33,7 @@ export default function EventDetail({ event }: { event: any }) {
         }
 
         if (router.query.success === 'true') {
-            alert('🎉 Thank you for your contribution! Your support is officially recognized.');
+            showToast('🎉 Thank you for your contribution! Your support is officially recognized.', 'success');
             router.replace(`/events/${event._id}`, undefined, { shallow: true });
         }
     }, [user, event._id, router.query.success]);
@@ -57,10 +59,10 @@ export default function EventDetail({ event }: { event: any }) {
                 setParticipants((p: number) => p + 1);
             } else {
                 const data = await res.json();
-                alert(data.message || 'Failed to join');
+                showToast(data.message || 'Failed to join', 'error');
             }
         } catch (err) {
-            alert('Failed to join');
+            showToast('Failed to join', 'error');
         } finally {
             setJoining(false);
         }
@@ -80,7 +82,7 @@ export default function EventDetail({ event }: { event: any }) {
                 setParticipants((p: number) => p - 1);
             }
         } catch (err) {
-            alert('Failed to leave');
+            showToast('Failed to leave', 'error');
         } finally {
             setJoining(false);
         }
@@ -102,7 +104,7 @@ export default function EventDetail({ event }: { event: any }) {
             const data = await res.json();
             if (data.url) window.location.href = data.url;
         } catch (e) {
-            alert('Secure transaction pipeline failure. Please retry.');
+            showToast('Secure transaction pipeline failure. Please retry.', 'error');
         } finally {
             setLoading(false);
         }
@@ -110,6 +112,7 @@ export default function EventDetail({ event }: { event: any }) {
 
     return (
         <>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <Head>
                 <title>{event.name} | GuardianLines</title>
             </Head>

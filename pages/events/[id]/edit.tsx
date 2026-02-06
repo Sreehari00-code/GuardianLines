@@ -7,11 +7,13 @@ import ImageUpload from '@/components/ImageUpload';
 import CustomSelect from '@/components/forms/CustomSelect';
 import CustomDatePicker from '@/components/forms/CustomDatePicker';
 import StepCounter from '@/components/forms/StepCounter';
+import ToastContainer, { useToast } from '@/components/Toast';
 
 export default function EditEvent() {
     const router = useRouter();
     const { id } = router.query;
     const { user, loading: authLoading } = useAuth();
+    const { toasts, showToast, removeToast } = useToast();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -77,10 +79,10 @@ export default function EditEvent() {
                 router.push(`/events/${id}`);
             } else {
                 const data = await res.json();
-                alert(data.message || 'Update failed');
+                showToast(data.message || 'Update failed', 'error');
             }
         } catch (error) {
-            alert('Something went wrong');
+            showToast('Something went wrong', 'error');
         } finally {
             setSaving(false);
         }
@@ -94,6 +96,7 @@ export default function EditEvent() {
 
     return (
         <div className={styles.container}>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <Head>
                 <title>Modify Movement | GuardianLines</title>
             </Head>

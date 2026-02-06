@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
+import type { NextApiRequest } from 'next';
 import { parse } from 'cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_do_not_use_in_production';
@@ -39,7 +40,6 @@ export const authenticated = (fn: any) => async (req: NextApiRequest, res: NextA
     }
 
     // Attach user to request (optional, requires extending type)
-    // @ts-ignore
     req.user = decoded;
 
     return await fn(req, res);

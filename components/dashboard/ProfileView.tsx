@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import ImageUpload from '@/components/ImageUpload';
+import ToastContainer, { useToast } from '@/components/Toast';
 import styles from '@/styles/Dashboard.module.css';
 
 export default function ProfileView() {
@@ -9,6 +10,7 @@ export default function ProfileView() {
     const [profilePicture, setProfilePicture] = useState(user?.profilePicture || '');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    const { toasts, showToast, removeToast } = useToast();
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,12 +46,13 @@ export default function ProfileView() {
             const res = await fetch('/api/auth/profile', { method: 'DELETE' });
             if (res.ok) window.location.href = '/';
         } catch (error) {
-            alert('Something went wrong');
+            showToast('Something went wrong', 'error');
         }
     };
 
     return (
         <div className={styles.bentoCard} style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <h2 style={{ marginBottom: '2rem' }}>Account Settings</h2>
 
             <div className={styles.dashboardGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>

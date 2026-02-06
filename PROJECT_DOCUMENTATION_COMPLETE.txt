@@ -1,0 +1,158 @@
+===============================================================================
+                        PROJECT DOCUMENTATION
+                          TABLE OF CONTENTS
+
+                       GuardianLines Community Platform
+                     Community Event Management & Donation System
+
+===============================================================================
+
+Prepared By: [Your Name]
+Date: February 6, 2026
+University: [Your University]
+Version: 1.0
+
+===============================================================================
+
+
+TABLE OF CONTENTS
+
+No.    Topic                                                     Page No.
+───────────────────────────────────────────────────────────────────────────
+
+1      Project Overview                                          6
+
+2      Objectives of the Project                                 8
+
+3      Scope of the Project                                      10
+
+4      Study of Existing System                                  12
+
+5      Study of Proposed System                                  14
+
+6      Feasibility Study                                         15
+
+       6.1   Technical Feasibility                               17
+       6.2   Economical Feasibility                              19
+       6.3   Operational Feasibility                             21
+
+7      Software Requirement Specification                        23
+
+       7.1   Server Requirements                                 24
+       7.2   Client Requirements                                 24
+
+8      Software Environment & Technologies                       26
+
+       8.1   Next.JS Framework                                   28
+       8.2   React.JS                                            29
+       8.3   MongoDB Atlas                                       30
+       8.4   TypeScript                                          31
+       8.5   Stripe Payment Gateway                              32
+       8.6   Multer (File Upload Module)                         33
+       8.7   JSON Web Tokens (JWT)                               34
+       8.8   Mongoose ODM                                        35
+       8.9   Microsoft Visual Studio Code                        36
+
+9      System Architecture & Design                              37
+
+       9.1   Authentication System                               38
+       9.2   Event Management Module                             40
+       9.3   Donation System                                     42
+       9.4   Messaging System                                    43
+       9.5   Admin Dashboard                                     44
+       9.6   User Dashboard                                      45
+       9.7   Database Design (ER Diagram)                        46
+       9.8   API Architecture                                    47
+       9.9   Input/Output Design                                 48
+
+10     Database Models & Schema                                  50
+
+       10.1  User Model                                          51
+       10.2  Event Model                                         52
+       10.3  Category Model                                      53
+       10.4  Donation Model                                      54
+       10.5  Message Model                                       55
+       10.6  Comment Model                                       56
+       10.7  EventJoin Model                                     57
+
+11     System Testing                                            58
+
+       11.1  Unit Testing                                        59
+       11.2  Integration Testing                                 60
+       11.3  User Acceptance Testing                             61
+
+12     System Deployment & Maintenance                           62
+
+13     Security Measures                                         64
+
+       13.1  Authentication & Authorization                      65
+       13.2  Data Encryption                                     66
+       13.3  Input Validation                                    67
+
+14     Future Scope & Enhancements                               68
+
+15     Conclusion                                                70
+
+16     Bibliography & References                                 71
+
+17     Appendix                                                  73
+
+       17.1  API Endpoints Documentation                         74
+       17.2  Screen Shots                                        85
+       17.3  Database Schema Diagrams                            95
+       17.4  Project File Structure                              98
+       17.5  Installation & Setup Guide                          100
+
+───────────────────────────────────────────────────────────────────────────
+Total Pages: 100+
+===============================================================================
+
+
+PROJECT SUMMARY:
+
+Project Name:       GuardianLines Community Platform
+Project Type:       Web-based Community Event Management & Donation System
+Development Period: [Start Date] to [End Date]
+Technology Stack:   Next.JS, React.JS, MongoDB, TypeScript, Stripe Payment
+Team Members:       [Team Member Names]
+
+KEY FEATURES:
+• User Authentication & Authorization (Login, Signup, JWT)
+• Event Creation, Management & Discovery
+• Event Participation with Join/Leave Functionality
+• Donation System with Stripe Payment Integration
+• Real-time Messaging Between Users
+• Admin Dashboard for System Management
+• Category Management for Events
+• File Upload Functionality (Profile Pictures, Event Images)
+• User Dashboard with Analytics
+• Comment & Feedback System
+
+DATABASES MODELS:
+1. User Model - User profiles and authentication
+2. Event Model - Event details and management
+3. Category Model - Event categorization
+4. Donation Model - Donation tracking
+5. Message Model - User messaging
+6. Comment Model - Event comments
+7. EventJoin Model - User event participation
+
+API ENDPOINTS: 40+ RESTful endpoints
+
+===============================================================================
+
+INSTRUCTIONS FOR OPENING IN MICROSOFT WORD:
+
+1. Copy the content of this document
+2. Open Microsoft Word
+3. Select File → New → Blank Document
+4. Paste the content
+5. Format as needed:
+   - Heading 1 for main sections
+   - Heading 2 for subsections
+   - Use Tab Stops for alignment in table
+   - Adjust font to Times New Roman, 12pt for formal document
+   - Add page breaks between major sections
+   - Insert page numbers (Insert → Page Numbers)
+   - Generate automatic Table of Contents (References → Table of Contents)
+===============================================================================

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import ProfileView from '@/components/dashboard/ProfileView';
 import MyEventsView from '@/components/dashboard/MyEventsView';
+import MyJoinedEventsView from '@/components/dashboard/MyJoinedEventsView';
 import MyDonationsView from '@/components/dashboard/MyDonationsView';
 import MessagesView from '@/components/dashboard/MessagesView';
 import styles from '@/styles/Dashboard.module.css';
@@ -34,6 +35,7 @@ export default function UserDashboard() {
     const renderContent = () => {
         switch (view) {
             case 'events': return <MyEventsView />;
+            case 'joined': return <MyJoinedEventsView />;
             case 'donations': return <MyDonationsView />;
             case 'messages': return <MessagesView />;
             case 'settings': return <ProfileView />;
@@ -45,6 +47,7 @@ export default function UserDashboard() {
     const tabs = [
         { id: 'overview', label: 'Overview', icon: '🏠' },
         { id: 'events', label: 'Events', icon: '🎯' },
+        { id: 'joined', label: 'Joined', icon: '🎪' },
         { id: 'donations', label: 'Impact', icon: '💖' },
         { id: 'messages', label: 'Messages', icon: '💬' },
         { id: 'settings', label: 'Settings', icon: '⚙️' },

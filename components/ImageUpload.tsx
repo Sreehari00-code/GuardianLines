@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import { useToast } from './Toast';
 
 interface ImageUploadProps {
     onUpload: (url: string) => void;
@@ -10,6 +11,7 @@ export default function ImageUpload({ onUpload, currentImage, label = "Upload Im
     const [uploading, setUploading] = useState(false);
     const [preview, setPreview] = useState(currentImage || '');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { showToast } = useToast();
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -34,11 +36,11 @@ export default function ImageUpload({ onUpload, currentImage, label = "Upload Im
             if (res.ok) {
                 onUpload(data.url);
             } else {
-                alert(data.message || 'Upload failed');
+                showToast(data.message || 'Upload failed', 'error');
             }
         } catch (error) {
             console.error('Upload Error:', error);
-            alert('Upload failed');
+            showToast('Upload failed', 'error');
         } finally {
             setUploading(false);
         }

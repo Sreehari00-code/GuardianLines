@@ -13,12 +13,66 @@ export default function AdminDashboard() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const [view, setView] = useState('dashboard');
+    const [stats, setStats] = useState({
+        activeUsers: 0,
+        eventsModerated: 0,
+        totalDonations: 0,
+        categories: 0,
+        pendingEvents: 0,
+    });
+    const [loadingStats, setLoadingStats] = useState(true);
 
     useEffect(() => {
         if (!loading && (!user || user.role !== 'admin')) {
             router.push('/login');
         }
     }, [user, loading, router]);
+
+    useEffect(() => {
+        if (view === 'dashboard') {
+            fetchStats();
+        }
+    }, [view]);
+
+    const fetchStats = async () => {
+        try {
+            setLoadingStats(true);
+            const [usersRes, eventsRes, categoriesRes, donationsRes] = await Promise.all([
+                fetch('/api/auth/users'),
+                fetch('/api/events/index'),
+                fetch('/api/categories'),
+                fetch('/api/admin/donations?limit=1000'),
+            ]);
+
+            const usersData = await usersRes.json();
+            const eventsData = await eventsRes.json();
+            const categoriesData = await categoriesRes.json();
+            const donationsData = await donationsRes.json();
+
+            const allEvents = eventsData.events || [];
+            const activeUsers = Array.isArray(usersData) ? usersData.filter((u: any) => !u.isDisabled).length : 0;
+            const pendingEvents = allEvents.filter((e: any) => e.status === 'pending').length;
+
+            let totalDonations = 0;
+            if (donationsData.donations && Array.isArray(donationsData.donations)) {
+                totalDonations = donationsData.donations
+                    .filter((d: any) => d.status === 'completed')
+                    .reduce((sum: number, d: any) => sum + (d.amount || 0), 0) / 100;
+            }
+
+            setStats({
+                activeUsers,
+                eventsModerated: allEvents.length,
+                totalDonations: Math.round(totalDonations),
+                categories: categoriesData.categories?.length || 0,
+                pendingEvents,
+            });
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+        } finally {
+            setLoadingStats(false);
+        }
+    };
 
     if (loading || !user) return (
         <div style={{ minHeight: '100vh', background: 'var(--background)', color: 'var(--foreground)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -54,19 +108,19 @@ export default function AdminDashboard() {
                         <div className={styles.statsGrid}>
                             <div className={styles.statCard}>
                                 <span className={styles.statLabel}>Active Users</span>
-                                <span className={styles.statValue}>1.2k</span>
+                                <span className={styles.statValue}>{loadingStats ? '-' : stats.activeUsers}</span>
                             </div>
                             <div className={styles.statCard}>
                                 <span className={styles.statLabel}>Events Moderated</span>
-                                <span className={styles.statValue}>84</span>
+                                <span className={styles.statValue}>{loadingStats ? '-' : stats.eventsModerated}</span>
                             </div>
                             <div className={styles.statCard}>
                                 <span className={styles.statLabel}>Total Donations</span>
-                                <span className={styles.statValue}>$42k</span>
+                                <span className={styles.statValue}>{loadingStats ? '-' : `$${stats.totalDonations.toLocaleString('en-US', { maximumFractionDigits: 0 })}`}</span>
                             </div>
                             <div className={styles.statCard}>
                                 <span className={styles.statLabel}>Categories</span>
-                                <span className={styles.statValue}>12</span>
+                                <span className={styles.statValue}>{loadingStats ? '-' : stats.categories}</span>
                             </div>
                         </div>
 
@@ -87,7 +141,9 @@ export default function AdminDashboard() {
                                 <h3 style={{ marginBottom: '1.5rem', fontSize: '1.25rem' }}>Pending Moderation</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                     <div style={{ padding: '1.5rem', border: '1px dashed var(--glass-border)', borderRadius: '1.5rem', textAlign: 'center' }}>
-                                        <p style={{ color: 'var(--secondary)', fontSize: '0.9rem' }}>All events currently verified. No pending tasks.</p>
+                                        <p style={{ color: 'var(--secondary)', fontSize: '0.9rem' }}>
+                                            {loadingStats ? 'Loading...' : stats.pendingEvents === 0 ? 'All events currently verified. No pending tasks.' : `${stats.pendingEvents} event(s) pending moderation.`}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

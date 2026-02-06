@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from '@/styles/Dashboard.module.css';
+import ToastContainer, { useToast } from '@/components/Toast';
 
 export default function MyEventsView() {
     const [events, setEvents] = useState<any[]>([]);
@@ -8,6 +9,7 @@ export default function MyEventsView() {
     const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
     const [participants, setParticipants] = useState<any[]>([]);
     const [loadingParticipants, setLoadingParticipants] = useState(false);
+    const { toasts, showToast, removeToast } = useToast();
 
     const fetchMyEvents = async () => {
         try {
@@ -39,7 +41,7 @@ export default function MyEventsView() {
                 setEvents(events.map(e => e._id === eventId ? { ...e, isDisabled: data.event.isDisabled, status: data.event.status } : e));
             } else {
                 const err = await res.json();
-                alert(err.message || 'Action failed');
+                showToast(err.message || 'Action failed', 'error');
             }
         } catch (error) {
             console.error('Failed to toggle status', error);
@@ -66,6 +68,7 @@ export default function MyEventsView() {
 
     return (
         <div style={{ animation: 'slideUp 0.4s ease-out' }}>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <h2 style={{ marginBottom: '2rem' }}>My Initiatives</h2>
 
             {events.length === 0 ? (

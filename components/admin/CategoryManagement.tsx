@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/Admin.module.css';
+import ToastContainer, { useToast } from '@/components/Toast';
 
 export default function CategoryManagement() {
     const [categories, setCategories] = useState<any[]>([]);
     const [newCategory, setNewCategory] = useState('');
     const [loading, setLoading] = useState(true);
+    const { toasts, showToast, removeToast } = useToast();
 
     const fetchCategories = async () => {
         setLoading(true);
@@ -37,7 +39,7 @@ export default function CategoryManagement() {
                 setNewCategory('');
                 fetchCategories();
             } else {
-                alert('Failed to create category');
+                showToast('Failed to create category', 'error');
             }
         } catch (error) {
             console.error(error);
@@ -72,6 +74,7 @@ export default function CategoryManagement() {
 
     return (
         <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem', background: 'var(--glass-bg)', padding: '1.5rem', borderRadius: '1.5rem', border: '1px solid var(--glass-border)' }}>
                 <input
                     type="text"
