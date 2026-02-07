@@ -10,8 +10,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     await dbConnect();
 
-    // Admin check (req.user is already typed as DecodedToken)
-    if (!req.user || req.user.role !== 'admin') {
+    // Admin Check
+    // @ts-ignore
+    const user = req.user;
+   
+   
+   
+   
+    if (!user || user.role !== 'admin') {
         return res.status(403).json({ message: 'Access denied: Admins only' });
     }
 
@@ -19,22 +25,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const { disable } = req.body;
         const { id } = req.query;
 
+        console.log(`[DisableAPI] Toggling category ${id}. Disable: ${disable} (type: ${typeof disable})`);
+
         if (typeof disable !== 'boolean') {
             return res.status(400).json({ message: 'Invalid payload: disable must be a boolean' });
         }
 
         const category = await Category.findById(id);
-        if (!category) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
+        if (!category) return res.status(404).json({ message: 'Category not found' });
 
         category.isActive = !disable;
         await category.save();
 
-        return res.status(200).json({ success: true, category });
+        res.status(200).json({ success: true, category });
     } catch (error: any) {
-        return res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 }
+
 
 export default authenticated(handler);
